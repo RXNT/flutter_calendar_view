@@ -77,10 +77,24 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
   /// Notifies if there is any event that needs to be visible instantly.
   final EventScrollConfiguration scrollNotifier;
 
+  /// Shows lines required in how many lines need in an hour, should be divisible for 60
+  final int lineInterval;
+
+  /// Shows titles required in how many titles need in an hour, should be divisible for 60
+  final int titleInterval;
+
+  /// should be in hours 1 - 24
+  final int startIntervalTime;
+
+  /// should be in hours 1 - 24
+  final int endIntervalTime;
+
   /// Defines a single day page.
   const InternalDayViewPage({
     Key? key,
     required this.showVerticalLine,
+    required this.titleInterval,
+    required this.lineInterval,
     required this.width,
     required this.date,
     required this.eventTileBuilder,
@@ -100,6 +114,8 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
     required this.onDateLongPress,
     required this.minuteSlotSize,
     required this.scrollNotifier,
+    required this.startIntervalTime,
+    required this.endIntervalTime,
   }) : super(key: key);
 
   @override
@@ -112,6 +128,9 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
           CustomPaint(
             size: Size(width, height),
             painter: HourLinePainter(
+              startIntervalTime: startIntervalTime,
+              endIntervalTime: endIntervalTime,
+              minuteInterval: lineInterval,
               lineColor: hourIndicatorSettings.color,
               lineHeight: hourIndicatorSettings.height,
               offset: timeLineWidth + hourIndicatorSettings.offset,
@@ -131,6 +150,8 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
           Align(
             alignment: Alignment.centerRight,
             child: EventGenerator<T>(
+              startIntervalTime: startIntervalTime,
+              endIntervalTime: endIntervalTime,
               height: height,
               date: date,
               onTileTap: onTileTap,
@@ -146,6 +167,9 @@ class InternalDayViewPage<T extends Object?> extends StatelessWidget {
             ),
           ),
           TimeLine(
+            startIntervalTime: startIntervalTime,
+            endIntervalTime: endIntervalTime,
+            minuteInterval: titleInterval,
             height: height,
             hourHeight: hourHeight,
             timeLineBuilder: timeLineBuilder,

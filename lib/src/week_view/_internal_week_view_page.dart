@@ -93,9 +93,25 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
 
   final EventScrollConfiguration scrollConfiguration;
 
+  /// Shows lines required in how many lines need in an hour, should be divisible for 60
+  final int lineInterval;
+
+  /// Shows titles required in how many titles need in an hour, should be divisible for 60
+  final int titleInterval;
+
+  /// should be in hours 1 - 24
+  final int startIntervalTime;
+
+  /// should be in hours 1 - 24
+  final int endIntervalTime;
+
   /// A single page for week view.
   const InternalWeekViewPage({
     Key? key,
+    required this.lineInterval,
+    required this.titleInterval,
+    required this.startIntervalTime,
+    required this.endIntervalTime,
     required this.showVerticalLine,
     required this.weekTitleHeight,
     required this.weekDayBuilder,
@@ -165,6 +181,9 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                     CustomPaint(
                       size: Size(width, height),
                       painter: HourLinePainter(
+                        startIntervalTime: startIntervalTime,
+                        endIntervalTime: endIntervalTime,
+                        minuteInterval: lineInterval,
                         lineColor: hourIndicatorSettings.color,
                         lineHeight: hourIndicatorSettings.height,
                         offset: timeLineWidth + hourIndicatorSettings.offset,
@@ -212,6 +231,8 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                                       minuteSlotSize: minuteSlotSize,
                                     ),
                                     EventGenerator<T>(
+                                      startIntervalTime: startIntervalTime,
+                                      endIntervalTime: endIntervalTime,
                                       height: height,
                                       date: filteredDates[index],
                                       onTileTap: onTileTap,
@@ -232,6 +253,9 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                       ),
                     ),
                     TimeLine(
+                      startIntervalTime: startIntervalTime,
+                      endIntervalTime: endIntervalTime,
+                      minuteInterval: titleInterval,
                       timeLineWidth: timeLineWidth,
                       hourHeight: hourHeight,
                       height: height,

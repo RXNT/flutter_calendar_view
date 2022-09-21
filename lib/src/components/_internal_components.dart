@@ -112,6 +112,15 @@ class TimeLine extends StatelessWidget {
   /// This will display time string in timeline.
   final DateWidgetBuilder timeLineBuilder;
 
+  /// how often the titles will show 1 - 60
+  final int minuteInterval;
+
+  /// should be in hours 1 - 24
+  final int startIntervalTime;
+
+  /// should be in hours 1 - 24
+  final int endIntervalTime;
+
   static DateTime get _date => DateTime.now();
 
   /// Time line to display time at left side of day or week view.
@@ -121,11 +130,16 @@ class TimeLine extends StatelessWidget {
       required this.hourHeight,
       required this.height,
       required this.timeLineOffset,
-      required this.timeLineBuilder})
+      required this.timeLineBuilder,
+      required this.minuteInterval,
+      required this.startIntervalTime,
+      required this.endIntervalTime
+      })
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    int titlesRequired =  (60 / minuteInterval).round();
     return ConstrainedBox(
       key: ValueKey(hourHeight),
       constraints: BoxConstraints(
@@ -136,25 +150,31 @@ class TimeLine extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          for (int i = 1; i < Constants.hoursADay; i++)
-            Positioned(
-              top: hourHeight * i - timeLineOffset,
-              left: 0,
-              right: 0,
-              bottom: height - (hourHeight * (i + 1)) + timeLineOffset,
-              child: Container(
-                height: hourHeight,
-                width: timeLineWidth,
-                child: timeLineBuilder.call(
-                  DateTime(
-                    _date.year,
-                    _date.month,
-                    _date.day,
-                    i,
-                  ),
-                ),
+          for (int i = startIntervalTime; i < endIntervalTime; i++)
+    Stack(
+      children: [
+
+        for (int j = 0; j < titlesRequired; j++)
+        Positioned(
+          top: ((hourHeight) * i -(hourHeight * startIntervalTime ))- timeLineOffset + ( (hourHeight/titlesRequired) * j ),
+          left: 0,
+          right: 0,
+          bottom: height - (hourHeight * (i + 1)) + timeLineOffset,
+          child: Container(
+            height: hourHeight,
+            width: timeLineWidth,
+            child: timeLineBuilder.call(
+              DateTime(
+                  _date.year,
+                  _date.month,
+                  _date.day,
+                  (i).round(), minuteInterval * j
               ),
             ),
+          ),
+        ),
+        ]
+    )
         ],
       ),
     );
@@ -189,9 +209,17 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
 
   final EventScrollConfiguration scrollNotifier;
 
+  /// should be in hours 1 - 24
+  final int startIntervalTime;
+
+  /// should be in hours 1 - 24
+  final int endIntervalTime;
+
   /// A widget that display event tiles in day/week view.
   const EventGenerator({
     Key? key,
+    required this.startIntervalTime,
+    required this.endIntervalTime,
     required this.height,
     required this.width,
     required this.events,
@@ -212,6 +240,8 @@ class EventGenerator<T extends Object?> extends StatelessWidget {
       height: height,
       width: width,
       heightPerMinute: heightPerMinute,
+      startIntervalTime: startIntervalTime,
+      endIntervalTime: endIntervalTime
     );
 
     return List.generate(events.length, (index) {

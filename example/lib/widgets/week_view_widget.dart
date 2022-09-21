@@ -1,6 +1,7 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 
+import 'package:intl/intl.dart';
 import '../model/event.dart';
 
 class WeekViewWidget extends StatelessWidget {
@@ -14,6 +15,12 @@ class WeekViewWidget extends StatelessWidget {
     return WeekView<Event>(
       key: state,
       width: width,
+        lineInterval: 30,
+        titleInterval: 30,
+        timeLineWidth: 60,
+        startIntervalTime: 9,
+        endIntervalTime: 16,
+        timeLineStringBuilder:(date ,{secondaryDate})=> DateFormat('KK:mm').format(date)
     );
   }
 }

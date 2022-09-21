@@ -74,7 +74,7 @@ class RoundedEventTile extends StatelessWidget {
                 title,
                 style: titleStyle ??
                     TextStyle(
-                      fontSize: 20,
+                      fontSize: 16,
                       color: backgroundColor.accent,
                     ),
                 softWrap: true,
@@ -89,7 +89,7 @@ class RoundedEventTile extends StatelessWidget {
                   description,
                   style: descriptionStyle ??
                       TextStyle(
-                        fontSize: 17,
+                        fontSize: 12,
                         color: backgroundColor.accent.withAlpha(200),
                       ),
                 ),
@@ -137,6 +137,47 @@ class DayPageHeader extends CalendarPageHeader {
               dateStringBuilder ?? DayPageHeader._dayStringBuilder,
           textStyle: textStyle,
         );
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(
+                  bottom: BorderSide(
+                  color: Colors.black12,
+                  width: 1.0,
+                  ),
+      ),
+      ),
+
+      clipBehavior: Clip.antiAlias,
+      child: Row(
+
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Padding(padding: EdgeInsets.all(10)),
+          Expanded(
+            child: InkWell(
+              onTap: onTitleTapped,
+              child: Text(
+                dateStringBuilder(date, secondaryDate: secondaryDate),
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                    color: Colors.grey[800],
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17),
+              ),
+
+            ),
+          ),
+          Spacer()
+        ],
+      ),
+    );
+  }
+
   static String _dayStringBuilder(DateTime date, {DateTime? secondaryDate}) =>
       "${date.day} - ${date.month} - ${date.year}";
 }

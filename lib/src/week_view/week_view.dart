@@ -154,6 +154,18 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// where events are not there.
   final MinuteSlotSize minuteSlotSize;
 
+  /// Shows lines required in how many lines need in an hour, should be divisible for 60
+  final int lineInterval;
+
+  /// Shows titles required in how many titles need in an hour, should be divisible for 60
+  final int titleInterval;
+
+  /// should be in hours 1 - 24
+  final int startIntervalTime;
+
+  /// should be in hours 1 - 24
+  final int endIntervalTime;
+
   /// Main widget for week view.
   const WeekView({
     Key? key,
@@ -189,6 +201,11 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.timeLineStringBuilder,
     this.weekDayStringBuilder,
     this.weekDayDateStringBuilder,
+    this.startIntervalTime = 0,
+    this.endIntervalTime = 24,
+    this.titleInterval = 60,
+    this.lineInterval = 60,
+
   })  : assert((timeLineOffset) >= 0,
             "timeLineOffset must be greater than or equal to 0"),
         assert(width == null || width > 0,
@@ -239,6 +256,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   late List<WeekDays> _weekDays;
 
   final _scrollConfiguration = EventScrollConfiguration();
+
 
   @override
   void initState() {
@@ -358,6 +376,10 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                           builder: (_, __, ___) => InternalWeekViewPage<T>(
                                 key: ValueKey(_hourHeight.toString() +
                                     dates[0].toString()),
+                                lineInterval: widget.lineInterval,
+                                titleInterval: widget.titleInterval,
+                                startIntervalTime: widget.startIntervalTime,
+                                endIntervalTime: widget.endIntervalTime,
                                 height: _height,
                                 width: _width,
                                 weekTitleWidth: _weekTitleWidth,
@@ -467,7 +489,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
   void _calculateHeights() {
     _hourHeight = widget.heightPerMinute * 60;
-    _height = _hourHeight * Constants.hoursADay;
+    var nededHours = (widget.endIntervalTime - widget.startIntervalTime);
+    _height = _hourHeight * (nededHours);
   }
 
   void _assignBuilders() {

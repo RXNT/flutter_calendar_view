@@ -3,7 +3,7 @@
 // that can be found in the LICENSE file.
 
 import 'dart:async';
-
+import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../calendar_constants.dart';
@@ -145,9 +145,25 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// where events are not there.
   final MinuteSlotSize minuteSlotSize;
 
+  /// Shows lines required in how many lines need in an hour, should be divisible for 60
+  final int lineInterval;
+
+  /// Shows titles required in how many titles need in an hour, should be divisible for 60
+  final int titleInterval;
+
+  /// should be in hours 1 - 24
+  final int startIntervalTime;
+
+  /// should be in hours 1 - 24
+  final int endIntervalTime;
+
   /// Main widget for day view.
   const DayView({
     Key? key,
+    this.startIntervalTime = 0,
+    this.endIntervalTime = 24,
+    this.titleInterval = 60,
+    this.lineInterval = 60,
     this.eventTileBuilder,
     this.dateStringBuilder,
     this.timeStringBuilder,
@@ -309,7 +325,7 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
         width: _width,
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: widget.backgroundColor,
+            color:widget.backgroundColor,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -334,7 +350,11 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                             builder: (_, __, ___) => InternalDayViewPage<T>(
                                   key: ValueKey(
                                       _hourHeight.toString() + date.toString()),
-                                  width: _width,
+                                  width: _width -1,
+                                  lineInterval: widget.lineInterval,
+                                  titleInterval: widget.titleInterval,
+                                  startIntervalTime: widget.startIntervalTime,
+                                  endIntervalTime: widget.endIntervalTime,
                                   liveTimeIndicatorSettings:
                                       _liveTimeIndicatorSettings,
                                   timeLineBuilder: _timeLineBuilder,
@@ -419,7 +439,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
   void _calculateHeights() {
     _hourHeight = widget.heightPerMinute * 60;
-    _height = _hourHeight * Constants.hoursADay;
+     var nededHours = (widget.endIntervalTime - widget.startIntervalTime);
+    _height = _hourHeight * (nededHours);
   }
 
   void _assignBuilders() {
@@ -478,13 +499,13 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   ) {
     if (events.isNotEmpty)
       return RoundedEventTile(
-        borderRadius: BorderRadius.circular(10.0),
+        borderRadius: BorderRadius.circular(2.0),
         title: events[0].title,
         totalEvents: events.length - 1,
         description: events[0].description,
-        padding: EdgeInsets.all(10.0),
+        padding: EdgeInsets.all(2.0),
         backgroundColor: events[0].color,
-        margin: EdgeInsets.all(2.0),
+        margin: EdgeInsets.all(1.0),
       );
     else
       return SizedBox.shrink();

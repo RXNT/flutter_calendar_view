@@ -15,6 +15,8 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
     required double height,
     required double width,
     required double heightPerMinute,
+    required int startIntervalTime,
+    required int endIntervalTime,
   }) {
     final durations = _getEventsDuration(events);
     final tempEvents = [...events]..sort((e1, e2) =>
@@ -35,7 +37,7 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
     while (tempEvents.isNotEmpty && rowCounter < events.length) {
       eventCounter = 0;
 
-      var end = tempEvents[0].endTime?.getTotalMinutes ?? 0;
+      var end = (tempEvents[0].endTime?.getTotalMinutes ?? 0) - 1;
 
       _insertIntoTable(table, durations, rowCounter, tempEvents[0]);
 
@@ -46,7 +48,7 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
           _insertIntoTable(
               table, durations, rowCounter, tempEvents[eventCounter]);
 
-          end = tempEvents[eventCounter].endTime?.getTotalMinutes ?? 0;
+          end =( tempEvents[eventCounter].endTime?.getTotalMinutes ?? 0)  -1;
           tempEvents.removeAt(eventCounter);
         } else {
           eventCounter++;
@@ -66,11 +68,11 @@ class SideEventArranger<T extends Object?> extends EventArranger<T> {
           event = table[i][j];
 
           final top =
-              (event!.startTime?.getTotalMinutes ?? 0) * heightPerMinute;
+              ((event!.startTime?.getTotalMinutes ?? 0) * heightPerMinute) - (startIntervalTime *heightPerMinute * 60 );
           final bottom = height -
-              ((event.endTime?.getTotalMinutes ?? 0) * heightPerMinute);
+              (((event.endTime?.getTotalMinutes ?? 0) * heightPerMinute) - (startIntervalTime *heightPerMinute * 60 ));
           final left = widthPerCol * i;
-          final right = width - (left + widthPerCol);
+          final right =  width - (left + widthPerCol);
 
           final index = _containsEvent(arrangedEvent, event);
 
