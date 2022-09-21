@@ -39,4 +39,9 @@ class WeekPageHeader extends CalendarPageHeader {
       "${date.day} / ${date.month} / ${date.year} to "
       "${secondaryDate != null ? "${secondaryDate.day} / "
           "${secondaryDate.month} / ${secondaryDate.year}" : ""}";
+
+  @override
+  Widget build(BuildContext context) {
+   return Container();
+  }
 }
